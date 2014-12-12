@@ -5,11 +5,11 @@ import re
 def find_this_arg(view, star = None):
   expr = 'func\s*\((.*?)\)'
   result = expression.find_match(view, view.sel()[0].a, expr,
-    {'backward': True, 'scope': 'keyword.other.go'})
+    {'backward': True, 'scope': 'keyword.control.go'})
   result = result or expression.find_match(view, view.sel()[0].a, expr,
-    {'backward': False, 'scope': 'keyword.other.go'})
+    {'backward': False, 'scope': 'keyword.control.go'})
   result = result or expression.find_match(view, 0, 'type (\w+)',
-    {'backward': False, 'scope': 'keyword.other.go'})
+    {'backward': False, 'scope': 'keyword.control.go'})
 
   if result != None:
     result = result.group(1)
@@ -26,11 +26,11 @@ def find_this_arg(view, star = None):
 def find_this_type(view, star = None):
   expr = 'func\s*\(.*?\s(\w+)\)'
   result = expression.find_match(view, view.sel()[0].a, expr,
-    {'backward': True, 'scope': 'keyword.other.go'})
+    {'backward': True, 'scope': 'keyword.control.go'})
   result = result or expression.find_match(view, view.sel()[0].a, expr,
-    {'backward': False, 'scope': 'keyword.other.go'})
+    {'backward': False, 'scope': 'keyword.control.go'})
   result = result or expression.find_match(view, 0, 'type (\w+)',
-    {'backward': False, 'scope': 'keyword.other.go'})
+    {'backward': False, 'scope': 'keyword.control.go'})
 
   if result != None:
     result = result.group(1)
