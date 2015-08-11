@@ -77,30 +77,47 @@ class RunCommands(sublime_plugin.TextCommand):
 
       self.view.run_command(command['command'], args)
 
-def ensure_line_before(view, edit):
+def ensure_line_before(view, edit, ignore):
   for sel in reversed(view.sel()):
     start = view.line(sel.begin()).a - 1
-    if re.sub(r'\s', '', view.substr(view.line(start))) != '':
-      view.insert(edit, start, "\n")
+    previous_line = re.sub(r'\s', '', view.substr(view.line(start)))
+
+    if previous_line == '':
+      return
+
+    for ignore_value in ignore:
+      if previous_line.endswith(ignore_value):
+        return
+
+    view.insert(edit, start, "\n")
 
 class EnsureLineBefore(sublime_plugin.TextCommand):
-  def run(self, edit):
-    ensure_line_before(self.view, edit)
+  def run(self, edit, ignore = ['{', '[', 'begin']):
+    ensure_line_before(self.view, edit, ignore)
 
 def ensure_line_after(view, edit, ignore):
   for sel in reversed(view.sel()):
     end = view.line(sel.begin()).b + 1
     next_line = re.sub(r'\s', '', view.substr(view.line(end)))
-    if next_line != '' and next_line not in ignore:
-      view.insert(edit, end, "\n")
+
+    if next_line == '':
+      return
+
+    for ignore_value in ignore:
+      if next_line.startswith(ignore_value):
+        return
+
+    view.insert(edit, end, "\n")
 
 class EnsureLineAfter(sublime_plugin.TextCommand):
-  def run(self, edit, ignore = ['}', 'end']):
+  def run(self, edit, ignore = ['}', ']', 'end']):
     ensure_line_after(self.view, edit, ignore)
 
 class EnsureLinesAround(sublime_plugin.TextCommand):
-  def run(self, edit, ignore_after = ['}', 'end']):
-    ensure_line_before(self.view, edit)
+  def run(self, edit, ignore_after = ['}', ']', 'end'],
+    ignore_before = ['{', '[', 'begin']):
+
+    ensure_line_before(self.view, edit, ignore_before)
     ensure_line_after(self.view, edit, ignore_after)
 
 class EnsureSpaceBefore(sublime_plugin.TextCommand):
