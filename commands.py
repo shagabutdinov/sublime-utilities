@@ -30,7 +30,10 @@ class ReplaceTextByRegexp(sublime_plugin.TextCommand):
         self.view.replace(edit, region, text)
 
 class InsertText(sublime_plugin.TextCommand):
-  def run(self, edit, point, text):
+  def run(self, edit, text, point = None):
+    if point == None:
+      point = self.view.sel()[0].begin()
+
     self.view.insert(edit, point, text)
 
 class DeleteSelection(sublime_plugin.TextCommand):
